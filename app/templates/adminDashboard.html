@@ -1,1 +1,73 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Waste Management System - Admin Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Smart Waste Management System</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/admin/dashboard">Dashboard</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Admin Dashboard</h1>
+                <div class="card">
+                    <div class="card-header">
+                        Manage Users
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">User List</h5>
+                        <p class="card-text">Manage the registered users here.</p>
+                        <a href="/admin/users" class="btn btn-primary">Go to Users</a>
+                    </div>
+                </div>
+                <div class="card mt-4">
+                    <div class="card-header">
+                        Manage Collection Schedules
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Collection Schedule List</h5>
+                        <p class="card-text">Manage the collection schedules here.</p>
+                        <a href="/admin/schedules" class="btn btn-primary">Go to Schedules</a>
+                    </div>
+                </div>
+                <div class="card mt-4">
+                    <div class="card-header">
+                        Reports and Analytics
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">View Reports</h5>
+                        <p class="card-text">Generate and view system reports and analytics.</p>
+                        <a href="/admin/reports" class="btn btn-primary">Go to Reports</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <p>&copy; 2024 Smart Waste Management System</p>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>
