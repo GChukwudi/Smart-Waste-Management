@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron text-center">
+    <h1 class="display-4">Welcome to the Smart Waste Management System</h1>
+    <p class="lead">Manage your waste collection schedules, track recycling efforts, and view environmental impact metrics.</p>
+    <hr class="my-4">
+    <p>Sign up or log in to get started.</p>
+    <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}" role="button">Sign Up</a>
+    <a class="btn btn-secondary btn-lg" href="{{ url_for('login') }}" role="button">Log In</a>
+</div>
+{% endblock %}
