@@ -1,0 +1,63 @@
+Backend Tasks (Divine and Nicolas)
+
+1. Project Setup and Configuration
+   - Initialize the Flask application (Divine)
+   - Set up database configurations and .env file (Nicolas)
+   - Configure SQLAlchemy and Flask-Migrate (Divine)
+
+2. User Authentication and Authorization
+   - Implement user registration (Divine)
+   - Implement user login and session management using Flask-Login (Nicolas)
+   - Implement user roles (user, admin) (Divine)
+
+3. Database Models
+   - Create User model (Nicolas)
+   - Create Schedule model (Divine)
+   - Create RecyclingRecord model (Nicolas)
+
+4. API and Routes
+   - Create routes for user registration and login (Nicolas)
+   - Create routes for scheduling waste collection (Divine)
+   - Create routes for tracking recycling efforts (Nicolas)
+   - Create routes for the admin dashboard (Divine)
+
+5. Data Management and Scheduling
+   - Implement logic for scheduling waste collection (Divine)
+   - Implement logic for tracking recycling efforts (Nicolas)
+   - Implement admin dashboard functionalities (Divine)
+
+6. Testing
+   - Write unit tests for critical backend functionalities (Divine and Nicolas)
+   - Ensure high code coverage and reliability (Divine and Nicolas)
+
+7. Deployment and CI/CD
+   - Set up a CI/CD pipeline using GitHub Actions (Nicolas)
+   - Deploy the application using Heroku or AWS (Divine)
+
+Frontend Tasks (Myself and David)
+
+1. Project Setup and Configuration
+   - Set up the project structure for the frontend (Myself)
+   - Configure static files and templates (Myself and David)
+
+2. HTML Templates
+   - Create base HTML template (base.html) (David)
+   - Create index page (index.html) (Myself)
+   - Create user registration page (register.html) (David)
+   - Create user login page (login.html) (Myself)
+
+3. User Dashboard
+   - Create dashboard page for users (dashboard.html) (David)
+   - Create schedule page for waste collection (schedule.html) (Myself)
+   - Create recycling tracker page (track.html) (David)
+
+4. Admin Dashboard
+   - Create admin dashboard page (admin_dashboard.html) (Myself)
+
+5. CSS and JavaScript
+   - Design the overall UI using Bootstrap and custom CSS (David)
+   - Implement client-side form validation and interactions with JavaScript (Myself)
+
+6. Testing
+   - Ensure responsiveness and cross-browser compatibility (Myself and David)
+   - Test UI functionalities and user interactions (Myself and David)
