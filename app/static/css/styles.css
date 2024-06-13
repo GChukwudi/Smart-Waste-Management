@@ -1,7 +1,5 @@
-/* styles.css */
-
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'calibri', sans-serif;
 }
 
 .header {
@@ -22,11 +20,40 @@ body {
 }
 
 .btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #343148;
+    border-color: #D7C49E;
 }
 
 .btn-primary:hover {
     background-color: #0056b3;
     border-color: #004085;
+}
+.navbar {
+    background-color: #333;
+    color: #fff;
+}
+
+.navbar-brand {
+    font-size: 24px;
+    font-weight: bold;
+}
+.nav-item {
+    padding: 10px;
+    margin-left: 200px;
+    margin-right: 200px;
+}
+.nav-link {
+    color: #fff;
+}
+.nav-link:hover {
+    color: #ccc;
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.footer {
+    padding: 10px;
+    text-align: center;
 }
