@@ -4,7 +4,9 @@ from app.forms import LoginForm, RegistrationForm, ScheduleForm
 from app.models import User, Schedule
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
-from app.main import bp
+from flask import Blueprint
+
+bp = Blueprint('main', __name__)
 
 @app.route('/')
 @app.route('/index')
