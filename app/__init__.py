@@ -21,12 +21,7 @@ def create_app():
     login.init_app(app)
     csrf.init_app(app)
 
-    register_blueprints(app)
+    from app.routes import bp as main_bp
+    app.register_blueprint(main_bp)
 
     return app
-
-def register_blueprints(app):
-    from app.routes import auth, main
-
-    app.register_blueprint(auth, url_prefix='/auth')
-    app.register_blueprint(main)
