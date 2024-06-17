@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from app.config import Config
+from app.routes import bp as main_bp
 
 db = SQLAlchemy()
 migrate = Migrate()
