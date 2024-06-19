@@ -64,7 +64,7 @@ def schedule():
     # return render_template('schedule.html', title='Schedule', form=form)
     if request.method == 'POST':
         date_str = request.form.get('date')
-        user_id = request.form.get('user_id')
+        user_id = current_user.id
 
         try:
             date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
@@ -75,7 +75,12 @@ def schedule():
         db.session.add(schedule)
         db.session.commit()
 
-        return jsonify({'message': 'Schedule created successfully!'}), 201
+        flash('Schedule created successfully!', 'success')
+        return redirect(url_for('main.dashboard'))
+    
+    return render_template('schedule.html', title='Schedule')
+
+        # return jsonify({'message': 'Schedule created successfully!'}), 201
 
 @main.route("/recycle", methods=['GET', 'POST'])
 @login_required
