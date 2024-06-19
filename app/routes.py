@@ -1,64 +1,85 @@
-from flask import render_template, flash, redirect, url_for, request
-from app import db
-from app.forms import LoginForm, RegistrationForm, ScheduleForm
-from app.models import User, Schedule
-from flask_login import current_user, login_user, logout_user, login_required
-# from werkzeug.urls import url_parse  # Correct import
-# from werkzeug.utils import url_parse
-from urllib.parse import urlparse
-from flask import Blueprint
+from flask import render_template, url_for, flash, redirect, request, Blueprint
+from app import db, bcrypt
+from app.forms import RegistrationForm, LoginForm, ScheduleForm, RecyclingForm
+from app.models import User, Schedule, Recycling
+from flask_login import login_user, current_user, logout_user, login_required
 
-bp = Blueprint('main', __name__)
+main = Blueprint('main', __name__)
 
-@bp.route('/')
-@bp.route('/index')
-def index():
-    return render_template('index.html', title='Home')
+@main.route("/")
+@main.route("/home")
+def home():
+    return render_template('index.html')
 
-@bp.route('/login', methods=['GET', 'POST'])
-def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
-            return redirect(url_for('main.login'))
-        login_user(user, remember=form.remember_me.data)
-        next_page = request.args.get('next')
-        if not next_page or urlparse(next_page).netloc != '':
-            next_page = url_for('main.index')
-        return redirect(next_page)
-    return render_template('login.html', title='Sign In', form=form)
-
-@bp.route('/logout')
-def logout():
-    logout_user()
-    return redirect(url_for('main.index'))
-
-@bp.route('/register', methods=['GET', 'POST'])
+@main.route("/register", methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('main.home'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
-        flash('Congratulations, you are now a registered user!')
+        flash('Your account has been created! You are now able to log in', 'success')
         return redirect(url_for('main.login'))
     return render_template('register.html', title='Register', form=form)
 
-@bp.route('/schedule', methods=['GET', 'POST'])
+@main.route("/login", methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.home'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('main.dashboard'))
+        else:
+            flash('Login Unsuccessful. Please check email and password', 'danger')
+    return render_template('login.html', title='Login', form=form)
+
+@main.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for('main.home'))
+
+@main.route("/dashboard")
+@login_required
+def dashboard():
+    return render_template('dashboard.html', title='Dashboard')
+
+@main.route("/schedule", methods=['GET', 'POST'])
 @login_required
 def schedule():
     form = ScheduleForm()
     if form.validate_on_submit():
-        schedule = Schedule(date=form.date.data, time=form.time.data, user_id=current_user.id)
+        schedule = Schedule(date=form.date.data, author=current_user)
         db.session.add(schedule)
         db.session.commit()
-        flash('Your waste collection schedule has been set!')
-        return redirect(url_for('main.index'))
+        flash('Your schedule has been created!', 'success')
+        return redirect(url_for('main.dashboard'))
     return render_template('schedule.html', title='Schedule', form=form)
+
+@main.route("/recycle", methods=['GET', 'POST'])
+@login_required
+def recycle():
+    form = RecyclingForm()
+    if form.validate_on_submit():
+        recycling = Recycling(materials=form.materials.data, author=current_user)
+        db.session.add(recycling)
+        db.session.commit()
+        flash('Your recycling effort has been logged!', 'success')
+        return redirect(url_for('main.dashboard'))
+    return render_template('recycle.html', title='Recycle', form=form)
+
+@main.route("/admin")
+@login_required
+def admin():
+    if current_user.role != 'admin':
+        return redirect(url_for('main.home'))
+    users = User.query.all()
+    schedules = Schedule.query.all()
+    recyclings = Recycling.query.all()
+    return render_template('admin.html', title='Admin Dashboard', users=users, schedules=schedules, recyclings=recyclings)
