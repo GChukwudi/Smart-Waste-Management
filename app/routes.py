@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from app import db, bcrypt
-from app.forms import RegistrationForm, LoginForm, ScheduleForm, RecyclingForm
-from app.models import User, Schedule, Recycling
+from app.forms import RegistrationForm, LoginForm, ScheduleForm, RecyclingForm, ImpactMetricForm
+from app.models import User, Schedule, Recycling, ImpactMetric
 from flask_login import login_user, current_user, logout_user, login_required
 
 main = Blueprint('main', __name__)
@@ -74,6 +74,18 @@ def recycle():
         return redirect(url_for('main.dashboard'))
     return render_template('recycle.html', title='Recycle', form=form)
 
+@main.route("/track", methods=['GET', 'POST'])
+@login_required
+def track():
+    form = ImpactMetricForm()
+    if form.validate_on_submit():
+        impact = ImpactMetric(carbon_saved=form.carbon_saved.data, energy_saved=form.energy_saved.data, author=current_user)
+        db.session.add(impact)
+        db.session.commit()
+        flash('Your environmental impact has been tracked!', 'success')
+        return redirect(url_for('main.dashboard'))
+    return render_template('track.html', title='Track Impact', form=form)
+
 @main.route("/admin")
 @login_required
 def admin():
@@ -82,4 +94,5 @@ def admin():
     users = User.query.all()
     schedules = Schedule.query.all()
     recyclings = Recycling.query.all()
-    return render_template('admin.html', title='Admin Dashboard', users=users, schedules=schedules, recyclings=recyclings)
+    impacts = ImpactMetric.query.all()
+    return render_template('admin.html', title='Admin Dashboard', users=users, schedules=schedules, recyclings=recyclings, impacts=impacts)

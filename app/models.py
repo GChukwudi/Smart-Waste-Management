@@ -15,6 +15,7 @@ class User(db.Model, UserMixin):
     role = db.Column(db.String(20), nullable=False, default='household')
     schedules = db.relationship('Schedule', backref='author', lazy=True)
     recyclings = db.relationship('Recycling', backref='author', lazy=True)
+    impact_metrics = db.relationship('ImpactMetric', backref='author', lazy=True)
 
 class Schedule(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -25,4 +26,11 @@ class Recycling(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     materials = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+class ImpactMetric(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    carbon_saved = db.Column(db.Float, nullable=False, default=0.0)
+    energy_saved = db.Column(db.Float, nullable=False, default=0.0)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
