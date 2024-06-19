@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, url_for, flash, redirect, request
+from flask import Blueprint, render_template, url_for, flash, redirect, request, jsonify
 from app import db, bcrypt
 from app.forms import RegistrationForm, LoginForm, ScheduleForm, RecyclingForm, ImpactMetricForm
 from app.models import User, Schedule, Recycling, ImpactMetric
 from flask_login import login_user, current_user, logout_user, login_required
+from datetime import datetime
 
 main = Blueprint('main', __name__)
 
@@ -53,14 +54,28 @@ def dashboard():
 @main.route("/schedule", methods=['GET', 'POST'])
 @login_required
 def schedule():
-    form = ScheduleForm()
-    if form.validate_on_submit():
-        schedule = Schedule(date=form.date.data, author=current_user)
+    # form = ScheduleForm()
+    # if form.validate_on_submit():
+    #     schedule = Schedule(date=form.date.data, author=current_user)
+    #     db.session.add(schedule)
+    #     db.session.commit()
+    #     flash('Your schedule has been created!', 'success')
+    #     return redirect(url_for('main.dashboard'))
+    # return render_template('schedule.html', title='Schedule', form=form)
+    if request.method == 'POST':
+        date_str = request.form.get('date')
+        user_id = request.form.get('user_id')
+
+        try:
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
+        except ValueError:
+            return jsonify({'error': 'Invalid date format. Please use YYYY-MM-DD'}), 400
+        
+        schedule = Schedule(date=date_obj, user_id=user_id)
         db.session.add(schedule)
         db.session.commit()
-        flash('Your schedule has been created!', 'success')
-        return redirect(url_for('main.dashboard'))
-    return render_template('schedule.html', title='Schedule', form=form)
+
+        return jsonify({'message': 'Schedule created successfully!'}), 201
 
 @main.route("/recycle", methods=['GET', 'POST'])
 @login_required

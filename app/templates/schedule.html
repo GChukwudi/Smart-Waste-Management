@@ -6,10 +6,27 @@
     {{ form.hidden_tag() }}
     <div class="form-group">
         {{ form.date.label(class="form-label") }}
-        {{ form.date(class="form-control") }}
+        <input type="date" id="datepicker" name="date" class="form-control">
     </div>
     <div class="form-group">
         {{ form.submit(class="btn btn-primary") }}
     </div>
 </form>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        // Custom script for date picker
+        document.addEventListener('DOMContentLoaded', function() {
+            const datepicker = document.getElementById('datepicker');
+            
+            // Set default date to today (optional)
+            const today = new Date().toISOString().split('T')[0];
+            datepicker.value = today;
+            
+            // You can add additional logic here for customizing the date picker behavior
+            
+        });
+    </script>
 {% endblock %}

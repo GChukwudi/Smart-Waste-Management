@@ -12,7 +12,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
-    role = db.Column(db.String(20), nullable=False, default='household')
+    role = db.Column(db.String(20), nullable=False, default='user')
     schedules = db.relationship('Schedule', backref='author', lazy=True)
     recyclings = db.relationship('Recycling', backref='author', lazy=True)
     impact_metrics = db.relationship('ImpactMetric', backref='author', lazy=True)
@@ -24,13 +24,13 @@ class Schedule(db.Model):
 
 class Recycling(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     materials = db.Column(db.String(100), nullable=False)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 class ImpactMetric(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    carbon_saved = db.Column(db.Float, nullable=False, default=0.0)
-    energy_saved = db.Column(db.Float, nullable=False, default=0.0)
+    carbon_saved = db.Column(db.Float, nullable=False)
+    energy_saved = db.Column(db.Float, nullable=False)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
