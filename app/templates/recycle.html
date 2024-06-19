@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Log Recycling{% endblock %}
+{% block content %}
+<h1 class="mt-4">Log Recycling</h1>
+<form method="POST" action="{{ url_for('main.recycle') }}">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.materials.label(class="form-label") }}
+        {{ form.materials(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
+</form>
+{% endblock %}

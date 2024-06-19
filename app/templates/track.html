@@ -1,8 +1,19 @@
 {% extends "base.html" %}
-
+{% block title %}Track Environmental Impact{% endblock %}
 {% block content %}
-  <h1>Track Recycling Efforts</h1>
-  <p>Your current recycling rate is {{ recycling_rate }}%</p>
-  <p>You have recycled {{ total_recycled }} kg of waste so far.</p>
-  <p>Keep up the good work!</p>
+<h1 class="mt-4">Track Environmental Impact</h1>
+<form method="POST" action="{{ url_for('main.track') }}">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.carbon_saved.label(class="form-label") }}
+        {{ form.carbon_saved(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.energy_saved.label(class="form-label") }}
+        {{ form.energy_saved(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
+</form>
 {% endblock %}

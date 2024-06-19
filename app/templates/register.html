@@ -1,17 +1,31 @@
 {% extends "base.html" %}
-
+{% block title %}Register{% endblock %}
 {% block content %}
-  <h1>Register</h1>
-  <form action="" method="post">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username"><br><br>
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email"><br><br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password"><br><br>
-    <label for="confirm_password">Confirm Password:</label>
-    <input type="password" id="confirm_password" name="confirm_password"><br><br>
-    <input type="submit" value="Register">
-  </form>
-  <p>Already have an account? <a href="{{ url_for('login') }}">Login</a> now!</p>
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2>Register</h2>
+        <form method="POST" action="{{ url_for('main.register') }}">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.username.label(class="form-label") }}
+                {{ form.username(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.confirm_password.label(class="form-label") }}
+                {{ form.confirm_password(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
