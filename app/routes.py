@@ -3,7 +3,9 @@ from app import db
 from app.forms import LoginForm, RegistrationForm, ScheduleForm
 from app.models import User, Schedule
 from flask_login import current_user, login_user, logout_user, login_required
-from werkzeug.urls import url_parse  # Corrected import
+# from werkzeug.urls import url_parse  # Correct import
+# from werkzeug.utils import url_parse
+from urllib.parse import urlparse
 from flask import Blueprint
 
 bp = Blueprint('main', __name__)
@@ -25,7 +27,7 @@ def login():
             return redirect(url_for('main.login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
-        if not next_page or url_parse(next_page).netloc != '':
+        if not next_page or urlparse(next_page).netloc != '':
             next_page = url_for('main.index')
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
