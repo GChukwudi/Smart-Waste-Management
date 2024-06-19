@@ -35,20 +35,23 @@
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 
 db = SQLAlchemy()
+login = LoginManager()
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object('config.Config')  # Load your configuration from a config file
+    app.config.from_object('config.Config')
 
-    db.init_app(app)  # Initialize SQLAlchemy with the Flask app
+    db.init_app(app)
+    login.init_app(app)
 
-    # Import blueprints and register them with the app
+    # Import blueprints and register them
     from .routes import bp as main_bp
     app.register_blueprint(main_bp)
 
-    # Import models (if not using application factory pattern, import here)
+    # Import models
     from .models import User  # Example import
 
     return app
