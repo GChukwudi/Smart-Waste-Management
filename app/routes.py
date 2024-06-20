@@ -5,6 +5,7 @@ from app.models import User, Schedule, Recycling, ImpactMetric
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime
 from collections import defaultdict
+from .forms import TrackForm
 # import json
 
 
@@ -96,37 +97,42 @@ def recycle():
 @main.route("/user/<username>")
 @login_required
 def user_profile(username):
-    # user = User.query.filter_by(username=username).first_or_404()
-
-    # if not user.materials_recycled:
-    #     # user.materials_recycled = defaultdict(int)
-    #     user.materials_recycled = {} 
-    #     db.session.commit()
-
-    # material_to_increment = request.args.get('material')
-    # if material_to_increment in user.materials_recycled:
-    #     user.materials_recycled[material_to_increment] += 1
-    # else:
-    #     user.materials_recycled[material_to_increment] = 1
-
-    # return render_template('user_profile.html', title='User Profile', user=user)
     user = User.query.get_or_404(current_user.id)
     user_materials_recycled = defaultdict(int)
     for item in user.recyclings:
         user_materials_recycled[item.materials_recycled] += 1
     return render_template('user_profile.html', user=user, materials_recycled=dict(user_materials_recycled))
 
-@main.route("/track", methods=['GET', 'POST'])
+@main.route("/track", methods=['POST'])
 @login_required
 def track():
-    form = ImpactMetricForm()
-    if form.validate_on_submit():
-        impact = ImpactMetric(carbon_saved=form.carbon_saved.data, energy_saved=form.energy_saved.data, author=current_user)
-        db.session.add(impact)
-        db.session.commit()
-        flash('Your environmental impact has been tracked!', 'success')
-        return redirect(url_for('main.dashboard'))
-    return render_template('track.html', title='Track Impact', form=form)
+    # Assume you have some logic to get the carbon and energy saved from the logs
+    carbon_saved, energy_saved = calculate_impact(current_user)
+
+    impact = ImpactMetric(
+        carbon_saved=carbon_saved,
+        energy_saved=energy_saved,
+        user_id=current_user.id
+    )
+    db.session.add(impact)
+    db.session.commit()
+    flash('Your impact has been recorded!', 'success')
+    return redirect(url_for('main.dashboard'))
+
+def calculate_impact(user):
+    # Logic to calculate the impact based on user's logging and scheduling data
+    # This is just a placeholder. Replace with your actual calculation logic
+    carbon_saved = 0.0
+    energy_saved = 0.0
+
+    # Example: Loop through user's schedules and recyclings to compute the impact
+    for recycling in user.recyclings:
+        # Calculate carbon and energy saved for each recycling entry
+        # Update carbon_saved and energy_saved variables accordingly
+        pass
+
+    return carbon_saved, energy_saved
+
 
 @main.route("/admin")
 @login_required

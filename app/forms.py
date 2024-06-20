@@ -47,3 +47,6 @@ class ImpactMetricForm(FlaskForm):
     carbon_saved = FloatField('Carbon Saved (kg)', validators=[DataRequired()])
     energy_saved = FloatField('Energy Saved (kWh)', validators=[DataRequired()])
     submit = SubmitField('Track Impact')
+
+class TrackForm(FlaskForm):
+    
