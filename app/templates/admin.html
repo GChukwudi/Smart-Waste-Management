@@ -9,15 +9,20 @@
     {% endfor %}
 </ul>
 <h2>Schedules</h2>
-<ul>
+<!-- <ul>
     {% for schedule in schedules %}
     <li>{{ schedule.date }} - {{ schedule.author.username }}</li>
     {% endfor %}
 </ul>
-<h2>Recyclings</h2>
+<h2>Recyclings</h2> -->
 <ul>
     {% for recycling in recyclings %}
     <li>{{ recycling.date }} - {{ recycling.materials }} - {{ recycling.author.username }}</li>
+    {% endfor %}
+</ul>
+<ul>
+    {% for schedule in schedules %}
+        <li>{{ schedule.date }} - {{ schedule.user.username }}</li>
     {% endfor %}
 </ul>
 {% endblock %}

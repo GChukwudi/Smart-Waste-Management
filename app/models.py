@@ -29,6 +29,7 @@ class Schedule(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref='schedules', lazy=True)
 
 class Recycling(db.Model):
     id = db.Column(db.Integer, primary_key=True)
