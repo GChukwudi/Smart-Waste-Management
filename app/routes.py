@@ -1,9 +1,11 @@
 from flask import Blueprint, render_template, url_for, flash, redirect, request, jsonify
 from app import db, bcrypt
 from app.forms import RegistrationForm, LoginForm, ScheduleForm, RecyclingForm, ImpactMetricForm
-from app.models import User, Schedule, Recycling, ImpactMetric
+from app.models import User, Schedule, Recycling, ImpactMetric, MaterialsRecycled
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime
+from collections import defaultdict
+
 
 main = Blueprint('main', __name__)
 
@@ -76,19 +78,23 @@ def recycle():
         return redirect(url_for('main.dashboard'))
     return render_template('recycle.html', title='Recycle', form=form)
 
-@main.route("/user/<string:username>")
+@main.route("/user/<username>")
 @login_required
 def user_profile(username):
     user = User.query.filter_by(username=username).first_or_404()
-    recyclings = Recycling.query.filter_by(author=user).order_by(Recycling.date_posted.desc()).all()
-    total_recyclings = len(recyclings)
-    materials_recycled = {}
-    for recycling in recyclings:
-        for material in recycling.materials.split(', '):
-            materials_recycled[material] += 1
+
+    material_to_increment = request.args.get('material')
+    if material_to_increment:
+        material_recycled = MaterialsRecycled.query.filter_by(user_id=user.id, material=material_to_increment).first()
+        if material_recycled:
+            material_recycled.count += 1
         else:
-            materials_recycled[material] = 1
-    return render_template('user_profile.html', user=user, recyclings=recyclings, total_recyclings=total_recyclings, materials_recycled=materials_recycled)
+            material_recycled = MaterialsRecycled(material=material_to_increment, count=1, user_id=user.id)
+            db.session.add(material_recycled)
+        db.session.commit()
+
+    return render_template('user_profile.html', title='User Profile', user=user)
+
 
 @main.route("/track", methods=['GET', 'POST'])
 @login_required
