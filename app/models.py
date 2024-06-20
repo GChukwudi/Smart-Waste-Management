@@ -1,9 +1,9 @@
 from datetime import datetime
 from app import db, login_manager
 from flask_login import UserMixin
-from flask_wtf import FlaskForm
-from wtforms import FloatField, SubmitField
-from wtforms.validators import DataRequired
+# from flask_wtf import FlaskForm
+# from wtforms import FloatField, SubmitField
+# from wtforms.validators import DataRequired
 
 
 @login_manager.user_loader
