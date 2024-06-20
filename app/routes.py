@@ -54,31 +54,15 @@ def dashboard():
 @main.route("/schedule", methods=['GET', 'POST'])
 @login_required
 def schedule():
-    # form = ScheduleForm()
-    # if form.validate_on_submit():
-    #     schedule = Schedule(date=form.date.data, author=current_user)
-    #     db.session.add(schedule)
-    #     db.session.commit()
-    #     flash('Your schedule has been created!', 'success')
-    #     return redirect(url_for('main.dashboard'))
-    # return render_template('schedule.html', title='Schedule', form=form)
-    if request.method == 'POST':
-        date_str = request.form.get('date')
-        user_id = current_user.id
-
-        try:
-            date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
-        except ValueError:
-            return jsonify({'error': 'Invalid date format. Please use YYYY-MM-DD'}), 400
-        
-        schedule = Schedule(date=date_obj, user_id=user_id)
+    form = ScheduleForm()
+    if form.validate_on_submit():
+        schedule = Schedule(date=form.date.data, author=current_user)
         db.session.add(schedule)
         db.session.commit()
-
-        flash('Schedule created successfully!', 'success')
+        flash('Your schedule has been created!', 'success')
         return redirect(url_for('main.dashboard'))
-    
-    return render_template('schedule.html', title='Schedule')
+    return render_template('schedule.html', title='Schedule', form=form)
+
 
 @main.route("/recycle", methods=['GET', 'POST'])
 @login_required
