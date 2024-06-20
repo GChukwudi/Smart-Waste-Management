@@ -84,7 +84,7 @@ def user_profile(username):
     total_recyclings = len(recyclings)
     materials_recycled = {}
     for recycling in recyclings:
-        if material in recycling.materials.split(', '):
+        for material in recycling.materials.split(', '):
             materials_recycled[material] += 1
         else:
             materials_recycled[material] = 1
