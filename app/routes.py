@@ -102,45 +102,29 @@ def user_profile(username):
         user_materials_recycled[item.materials_recycled] += 1
     return render_template('user_profile.html', user=user, materials_recycled=dict(user_materials_recycled))
 
-@main.route("/track", methods=['GET', 'POST'])
-@login_required
+@main.route('/track', methods=['GET','POST'])
+@login_required  # Assuming you use Flask-Login
 def track():
-    if request.method == 'POST':
-        # Assume you have some logic to get the carbon and energy saved from the logs
-        carbon_saved, energy_saved = calculate_impact(current_user)
-
+    form = TrackForm()
+    if form.validate_on_submit():
+        carbon_saved = form.carbon_saved.data
+        energy_saved = form.energy_saved.data
+        
+        # Ensure current_user is imported correctly
         impact = ImpactMetric(
             carbon_saved=carbon_saved,
             energy_saved=energy_saved,
-            user_id=current_user.id
+            date_tracked=datetime.now(),
+            user_id=current_user.id  # Assuming current_user has an 'id' attribute
         )
+        
         db.session.add(impact)
         db.session.commit()
-        flash('Your impact has been recorded!', 'success')
-        return redirect(url_for('main.dashboard'))
-    else:
-        # Handle GET request
-        form = TrackForm()  # Replace with your actual form instantiation
-        impact_metrics = ImpactMetric.query.filter_by(user_id=current_user.id).all()
-        return render_template('track.html', title='Track Impact', form=form, impact_metrics=impact_metrics)
-
-def calculate_impact(user):
-    # Placeholder for impact calculation logic
-    carbon_saved = 0.0
-    energy_saved = 0.0
-
-    # Replace with actual calculation based on user data
-    for recycling in user.recyclings:
-        carbon_saved += calculate_carbon_saved(recycling)
-        energy_saved += calculate_energy_saved(recycling)
-
-    return carbon_saved, energy_saved
-
-def calculate_carbon_saved(recycling):
-    return 0.1  
-
-def calculate_energy_saved(recycling):
-    return 0.5 
+        flash('Impact metrics logged successfully!', 'success')
+        return redirect(url_for('main.track'))
+    
+    impact_metrics = ImpactMetric.query.all()
+    return render_template('track.html', title='Track Impact', form=form, impact_metrics=impact_metrics)
 
 @main.route("/admin")
 @login_required

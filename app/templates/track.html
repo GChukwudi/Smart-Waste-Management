@@ -1,3 +1,5 @@
+<!-- track.html -->
+
 {% extends "base.html" %}
 {% block content %}
   <div class="container mt-4">
@@ -11,7 +13,7 @@
         {% endfor %}
       {% endif %}
     {% endwith %}
-    <form method="POST" action="{{ url_for('track') }}">
+    <form method="POST" action="{{ url_for('main.track') }}">
       {{ form.hidden_tag() }}
       <div class="form-group">
         {{ form.carbon_saved.label(class="form-control-label") }}
@@ -52,4 +54,3 @@
     {% endif %}
   </div>
 {% endblock %}
-
