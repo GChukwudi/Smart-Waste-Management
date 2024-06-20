@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, url_for, flash, redirect, request, jsonify
 from app import db, bcrypt
 from app.forms import RegistrationForm, LoginForm, ScheduleForm, RecyclingForm, ImpactMetricForm
-from app.models import User, Schedule, Recycling, ImpactMetric, MaterialsRecycled
+from app.models import User, Schedule, Recycling, ImpactMetric, MaterialRecycled
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime
 from collections import defaultdict
@@ -85,11 +85,11 @@ def user_profile(username):
 
     material_to_increment = request.args.get('material')
     if material_to_increment:
-        material_recycled = MaterialsRecycled.query.filter_by(user_id=user.id, material=material_to_increment).first()
+        material_recycled = MaterialRecycled.query.filter_by(user_id=user.id, material=material_to_increment).first()
         if material_recycled:
             material_recycled.count += 1
         else:
-            material_recycled = MaterialsRecycled(material=material_to_increment, count=1, user_id=user.id)
+            material_recycled = MaterialRecycled(material=material_to_increment, count=1, user_id=user.id)
             db.session.add(material_recycled)
         db.session.commit()
 
