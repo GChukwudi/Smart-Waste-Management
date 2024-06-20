@@ -17,7 +17,7 @@ class User(db.Model, UserMixin):
     schedules = db.relationship('Schedule', backref='author', lazy=True)
     recyclings = db.relationship('Recycling', backref='author', lazy=True)
     impact_metrics = db.relationship('ImpactMetric', backref='author', lazy=True)
-    materials_recycled = db.relationship('MaterialRecycled', backref='author', lazy=True)
+    materials_recycled = db.relationship('Recycling', backref='author', lazy=True)
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
