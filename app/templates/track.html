@@ -1,50 +1,55 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="content-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8">
-                <h2 class="mb-3">Track Impact</h2>
-                {% if impact_metrics %}
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h5 class="card-title">Your Impact Metrics</h5>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-group">
-                                {% for impact in impact_metrics %}
-                                    <li class="list-group-item">
-                                        <strong>Carbon Saved:</strong> {{ impact.carbon_saved }} kg CO2<br>
-                                        <strong>Energy Saved:</strong> {{ impact.energy_saved }} kWh<br>
-                                        <small class="text-muted">Tracked on {{ impact.date_tracked.strftime('%Y-%m-%d') }}</small>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                {% endif %}
+  <div class="container mt-4">
+    <h2>Track Impact</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form method="POST" action="{{ url_for('track') }}">
+      {{ form.hidden_tag() }}
+      <div class="form-group">
+        {{ form.carbon_saved.label(class="form-control-label") }}
+        {{ form.carbon_saved(class="form-control") }}
+        {% if form.carbon_saved.errors %}
+          <div class="invalid-feedback">
+            {% for error in form.carbon_saved.errors %}
+              <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      <div class="form-group">
+        {{ form.energy_saved.label(class="form-control-label") }}
+        {{ form.energy_saved(class="form-control") }}
+        {% if form.energy_saved.errors %}
+          <div class="invalid-feedback">
+            {% for error in form.energy_saved.errors %}
+              <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      <button type="submit" class="btn btn-primary">Log Impact</button>
+    </form>
 
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title">Log New Impact Metric</h5>
-                    </div>
-                    <div class="card-body">
-                        <form method="POST" action="{{ url_for('main.track') }}">
-                            {{ csrf_token() }}
-                            <div class="form-group">
-                                <label for="carbon_saved">Carbon Saved (kg CO2)</label>
-                                <input type="number" step="0.01" id="carbon_saved" name="carbon_saved" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="energy_saved">Energy Saved (kWh)</label>
-                                <input type="number" step="0.01" id="energy_saved" name="energy_saved" class="form-control" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Log Impact</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    <hr>
+
+    <h3>Recent Impact Metrics</h3>
+    {% if impact_metrics %}
+      <ul>
+        {% for impact in impact_metrics %}
+          <li>Carbon Saved: {{ impact.carbon_saved }} kg CO2, Energy Saved: {{ impact.energy_saved }} kWh</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No impact metrics logged yet.</p>
+    {% endif %}
+  </div>
 {% endblock %}
+
