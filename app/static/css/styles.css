@@ -1,59 +1,25 @@
-body {
-    font-family: 'calibri', sans-serif;
+/* styles.css */
+/* Example: Make navbar responsive */
+.navbar-nav {
+    /* Adjust padding or margin as needed */
 }
 
-.header {
-    margin-bottom: 20px;
-}
-
-.main {
-    margin-top: 20px;
-}
-
-.footer {
-    margin-top: 20px;
-    text-align: center;
-}
-
+/* Example: Make cards responsive */
 .card {
+    /* Ensure cards resize properly */
+    width: 100%; /* Ensures the card takes full width on smaller screens */
     margin-bottom: 20px;
 }
 
-.btn-primary {
-    background-color: #343148;
-    border-color: #D7C49E;
+/* Example: Ensure images are responsive */
+.img-fluid {
+    max-width: 100%;
+    height: auto;
 }
 
-.btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #004085;
-}
-.navbar {
-    background-color: #333;
-    color: #fff;
-}
-
-.navbar-brand {
-    font-size: 24px;
-    font-weight: bold;
-}
-.nav-item {
-    padding: 10px;
-    margin-left: 200px;
-    margin-right: 200px;
-}
-.nav-link {
-    color: #fff;
-}
-.nav-link:hover {
-    color: #ccc;
-}
-
-.main-content {
-    padding: 20px;
-}
-
-.footer {
-    padding: 10px;
-    text-align: center;
+/* Example: Hide certain elements on smaller screens */
+@media (max-width: 768px) {
+    .hide-on-small {
+        display: none;
+    }
 }

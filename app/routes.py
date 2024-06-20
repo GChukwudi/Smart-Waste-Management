@@ -1,11 +1,11 @@
 from flask import Blueprint, render_template, url_for, flash, redirect, request, jsonify
 from app import db, bcrypt
 from app.forms import RegistrationForm, LoginForm, ScheduleForm, RecyclingForm, ImpactMetricForm
-from app.models import User, Schedule, Recycling, ImpactMetric, MaterialRecycled
+from app.models import User, Schedule, Recycling, ImpactMetric
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime
 from collections import defaultdict
-
+import json
 
 main = Blueprint('main', __name__)
 
@@ -51,7 +51,22 @@ def logout():
 @main.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template('dashboard.html', title='Dashboard')
+    # Fetch impact metrics data
+    impact_metrics = ImpactMetric.query.filter_by(user_id=current_user.id).all()
+    
+    # Prepare data for chart
+    labels = [impact.date.strftime('%Y-%m-%d') for impact in impact_metrics]
+    carbon_saved = [impact.carbon_saved for impact in impact_metrics]
+    energy_saved = [impact.energy_saved for impact in impact_metrics]
+    
+    # Convert data to JSON for rendering in JavaScript
+    impact_data = {
+        'labels': labels,
+        'carbon_saved': carbon_saved,
+        'energy_saved': energy_saved
+    }
+    
+    return render_template('dashboard.html', title='Dashboard', impact_data=json.dumps(impact_data))
 
 @main.route("/schedule", methods=['GET', 'POST'])
 @login_required
@@ -64,7 +79,6 @@ def schedule():
         flash('Your schedule has been created!', 'success')
         return redirect(url_for('main.dashboard'))
     return render_template('schedule.html', title='Schedule', form=form)
-
 
 @main.route("/recycle", methods=['GET', 'POST'])
 @login_required
@@ -83,18 +97,17 @@ def recycle():
 def user_profile(username):
     user = User.query.filter_by(username=username).first_or_404()
 
-    material_to_increment = request.args.get('material')
-    if material_to_increment:
-        material_recycled = MaterialRecycled.query.filter_by(user_id=user.id, material=material_to_increment).first()
-        if material_recycled:
-            material_recycled.count += 1
-        else:
-            material_recycled = MaterialRecycled(material=material_to_increment, count=1, user_id=user.id)
-            db.session.add(material_recycled)
+    if not user.materials_recycled:
+        user.materials_recycled = defaultdict(int)
         db.session.commit()
 
-    return render_template('user_profile.html', title='User Profile', user=user)
+    material_to_increment = request.args.get('material')
+    if material_to_increment in user.materials_recycled:
+        user.materials_recycled[material_to_increment] += 1
+    else:
+        user.materials_recycled[material_to_increment] = 1
 
+    return render_template('user_profile.html', title='User Profile', user=user)
 
 @main.route("/track", methods=['GET', 'POST'])
 @login_required

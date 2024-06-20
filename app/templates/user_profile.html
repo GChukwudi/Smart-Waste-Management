@@ -1,21 +1,15 @@
 {% extends "base.html" %}
+
 {% block content %}
-<div class="profile">
-    <h2>{{ user.username }}'s Profile</h2>
-    <img src="{{ url_for('static', filename='profile_pics/' + user.image_file) }}" alt="Profile Picture" class="profile-img">
-    <p>Email: {{ user.email }}</p>
-    <p>Total Recycling Entries: {{ total_recyclings }}</p>
-    <h3>Recycling Impact</h3>
-    <ul>
-        {% for material, count in materials_count.items() %}
-            <li>{{ material }}: {{ count }}</li>
-        {% endfor %}
-    </ul>
-    <h3>Recycling History</h3>
-    <ul>
-        {% for recycling in recyclings %}
-            <li>{{ recycling.date_posted }}: {{ recycling.materials }}</li>
-        {% endfor %}
-    </ul>
+<div class="row mt-4">
+    <div class="col-md-6 offset-md-3">
+        <h2>{{ user.username }}'s Profile</h2>
+        <h3>Impact Metrics:</h3>
+        <ul>
+            {% for impact in user.impacts %}
+            <li>Carbon Saved: {{ impact.carbon_saved }} - Energy Saved: {{ impact.energy_saved }} - Date Tracked: {{ impact.date_tracked }}</li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 {% endblock %}
