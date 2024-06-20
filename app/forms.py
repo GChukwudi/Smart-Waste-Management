@@ -33,7 +33,7 @@ class ScheduleForm(FlaskForm):
 class RecyclingForm(FlaskForm):
     # materials = StringField('Materials', validators=[DataRequired()])
     # submit = SubmitField('Log Recycling')
-    materials = SelectField('Materials', choices=[
+    materials = SelectField('Materials Recycled', choices=[
         ('plastic', 'Plastic'),
         ('glass', 'Glass'),
         ('paper', 'Paper'),

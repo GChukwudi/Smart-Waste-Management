@@ -51,22 +51,21 @@ def logout():
 @main.route("/dashboard")
 @login_required
 def dashboard():
-    # Fetch impact metrics data
-    impact_metrics = ImpactMetric.query.filter_by(user_id=current_user.id).all()
-    
-    # Prepare data for chart
-    labels = [impact.date.strftime('%Y-%m-%d') for impact in impact_metrics]
+    impact_metrics = ImpactMetric.query.filter_by(author=current_user).all()
+    schedules = Schedule.query.filter_by(author=current_user).all()
+    recyclings = Recycling.query.filter_by(author=current_user).all()
+
+    labels = [impact.date_tracked.strftime('%Y-%m-%d') for impact in impact_metrics]
     carbon_saved = [impact.carbon_saved for impact in impact_metrics]
     energy_saved = [impact.energy_saved for impact in impact_metrics]
-    
-    # Convert data to JSON for rendering in JavaScript
+
     impact_data = {
         'labels': labels,
         'carbon_saved': carbon_saved,
         'energy_saved': energy_saved
     }
-    
-    return render_template('dashboard.html', title='Dashboard', impact_data=json.dumps(impact_data))
+
+    return render_template('dashboard.html', title='Dashboard', impact_data=impact_data, schedules=schedules, recyclings=recyclings)
 
 @main.route("/schedule", methods=['GET', 'POST'])
 @login_required
@@ -85,7 +84,7 @@ def schedule():
 def recycle():
     form = RecyclingForm()
     if form.validate_on_submit():
-        recycling = Recycling(materials=form.materials.data, date_posted=datetime.utcnow(), author=current_user)
+        recycling = Recycling(materials_recycled=form.materials.data, date_posted=datetime.utcnow(), author=current_user)
         db.session.add(recycling)
         db.session.commit()
         flash('Your recycling effort has been logged!', 'success')
