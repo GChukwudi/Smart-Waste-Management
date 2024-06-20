@@ -1,11 +1,10 @@
 from flask import Blueprint, render_template, url_for, flash, redirect, request, jsonify
 from app import db, bcrypt
-from app.forms import RegistrationForm, LoginForm, ScheduleForm, RecyclingForm, ImpactMetricForm
+from app.forms import RegistrationForm, LoginForm, ScheduleForm, RecyclingForm, ImpactMetricForm, TrackForm
 from app.models import User, Schedule, Recycling, ImpactMetric
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime
 from collections import defaultdict
-# from .forms import TrackForm
 # import json
 
 
@@ -75,7 +74,7 @@ def dashboard():
 def schedule():
     form = ScheduleForm()
     if form.validate_on_submit():
-        schedule = Schedule(date=form.date.data, author=current_user)
+        schedule = Schedule(date=form.date.data, user=current_user)
         db.session.add(schedule)
         db.session.commit()
         flash('Your schedule has been created!', 'success')
@@ -87,7 +86,7 @@ def schedule():
 def recycle():
     form = RecyclingForm()
     if form.validate_on_submit():
-        recycling = Recycling(materials_recycled=form.materials.data, date_posted=datetime.utcnow(), author=current_user)
+        recycling = Recycling(materials_recycled=form.materials.data, date_posted=datetime.utcnow(), user=current_user)
         db.session.add(recycling)
         db.session.commit()
         flash('Your recycling effort has been logged!', 'success')
@@ -103,36 +102,45 @@ def user_profile(username):
         user_materials_recycled[item.materials_recycled] += 1
     return render_template('user_profile.html', user=user, materials_recycled=dict(user_materials_recycled))
 
-@main.route("/track", methods=['POST'])
+@main.route("/track", methods=['GET', 'POST'])
 @login_required
 def track():
-    # Assume you have some logic to get the carbon and energy saved from the logs
-    carbon_saved, energy_saved = calculate_impact(current_user)
+    if request.method == 'POST':
+        # Assume you have some logic to get the carbon and energy saved from the logs
+        carbon_saved, energy_saved = calculate_impact(current_user)
 
-    impact = ImpactMetric(
-        carbon_saved=carbon_saved,
-        energy_saved=energy_saved,
-        user_id=current_user.id
-    )
-    db.session.add(impact)
-    db.session.commit()
-    flash('Your impact has been recorded!', 'success')
-    return redirect(url_for('main.dashboard'))
+        impact = ImpactMetric(
+            carbon_saved=carbon_saved,
+            energy_saved=energy_saved,
+            user_id=current_user.id
+        )
+        db.session.add(impact)
+        db.session.commit()
+        flash('Your impact has been recorded!', 'success')
+        return redirect(url_for('main.dashboard'))
+    else:
+        # Handle GET request
+        form = TrackForm()  # Replace with your actual form instantiation
+        impact_metrics = ImpactMetric.query.filter_by(user_id=current_user.id).all()
+        return render_template('track.html', title='Track Impact', form=form, impact_metrics=impact_metrics)
 
 def calculate_impact(user):
-    # Logic to calculate the impact based on user's logging and scheduling data
-    # This is just a placeholder. Replace with your actual calculation logic
+    # Placeholder for impact calculation logic
     carbon_saved = 0.0
     energy_saved = 0.0
 
-    # Example: Loop through user's schedules and recyclings to compute the impact
+    # Replace with actual calculation based on user data
     for recycling in user.recyclings:
-        # Calculate carbon and energy saved for each recycling entry
-        # Update carbon_saved and energy_saved variables accordingly
-        pass
+        carbon_saved += calculate_carbon_saved(recycling)
+        energy_saved += calculate_energy_saved(recycling)
 
     return carbon_saved, energy_saved
 
+def calculate_carbon_saved(recycling):
+    return 0.1  
+
+def calculate_energy_saved(recycling):
+    return 0.5 
 
 @main.route("/admin")
 @login_required
