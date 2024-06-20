@@ -80,8 +80,6 @@ def schedule():
     
     return render_template('schedule.html', title='Schedule')
 
-        # return jsonify({'message': 'Schedule created successfully!'}), 201
-
 @main.route("/recycle", methods=['GET', 'POST'])
 @login_required
 def recycle():

@@ -25,4 +25,7 @@ def create_app(config_class=Config):
     # Import models
     from .models import User  # Example import
 
+    with app.app_context():
+        db.create_all()
+
     return app
