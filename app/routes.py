@@ -4,8 +4,9 @@ from app.forms import RegistrationForm, LoginForm, ScheduleForm, RecyclingForm, 
 from app.models import User, Schedule, Recycling, ImpactMetric
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime
-from collections import defaultdict
-import json
+# from collections import defaultdict
+# import json
+
 
 main = Blueprint('main', __name__)
 
@@ -94,19 +95,25 @@ def recycle():
 @main.route("/user/<username>")
 @login_required
 def user_profile(username):
-    user = User.query.filter_by(username=username).first_or_404()
+    # user = User.query.filter_by(username=username).first_or_404()
 
-    if not user.materials_recycled:
-        user.materials_recycled = defaultdict(int)
-        db.session.commit()
+    # if not user.materials_recycled:
+    #     # user.materials_recycled = defaultdict(int)
+    #     user.materials_recycled = {} 
+    #     db.session.commit()
 
-    material_to_increment = request.args.get('material')
-    if material_to_increment in user.materials_recycled:
-        user.materials_recycled[material_to_increment] += 1
-    else:
-        user.materials_recycled[material_to_increment] = 1
+    # material_to_increment = request.args.get('material')
+    # if material_to_increment in user.materials_recycled:
+    #     user.materials_recycled[material_to_increment] += 1
+    # else:
+    #     user.materials_recycled[material_to_increment] = 1
 
-    return render_template('user_profile.html', title='User Profile', user=user)
+    # return render_template('user_profile.html', title='User Profile', user=user)
+    user = User.query.get_or_404(current_user.id)
+    user_materials_recycled = defaultdict(int)
+    for item in user.recyclings:
+        user_materials_recycled[item.materials_recycled] += 1
+    return render_template('user_profile.html', user=user, materials_recycled=dict(user_materials_recycled))
 
 @main.route("/track", methods=['GET', 'POST'])
 @login_required
