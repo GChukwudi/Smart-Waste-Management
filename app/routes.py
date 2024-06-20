@@ -69,12 +69,26 @@ def schedule():
 def recycle():
     form = RecyclingForm()
     if form.validate_on_submit():
-        recycling = Recycling(materials=form.materials.data, author=current_user)
+        recycling = Recycling(materials=form.materials.data, date_posted=datetime.utcnow(), author=current_user)
         db.session.add(recycling)
         db.session.commit()
         flash('Your recycling effort has been logged!', 'success')
         return redirect(url_for('main.dashboard'))
     return render_template('recycle.html', title='Recycle', form=form)
+
+@main.route("/user/<string:username>")
+@login_required
+def user_profile(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    recyclings = Recycling.query.filter_by(author=user).order_by(Recycling.date_posted.desc()).all()
+    total_recyclings = len(recyclings)
+    materials_recycled = {}
+    for recycling in recyclings:
+        if material in recycling.materials.split(', '):
+            materials_recycled[material] += 1
+        else:
+            materials_recycled[material] = 1
+    return render_template('user_profile.html', user=user, recyclings=recyclings, total_recyclings=total_recyclings, materials_recycled=materials_recycled)
 
 @main.route("/track", methods=['GET', 'POST'])
 @login_required

@@ -17,6 +17,9 @@ class User(db.Model, UserMixin):
     recyclings = db.relationship('Recycling', backref='author', lazy=True)
     impact_metrics = db.relationship('ImpactMetric', backref='author', lazy=True)
 
+    def __repr__(self):
+        return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+
 class Schedule(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -24,9 +27,12 @@ class Schedule(db.Model):
 
 class Recycling(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    materials = db.Column(db.String(100), nullable=False)
+    materials = db.Column(db.String(120), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return f"Recycling('{self.materials}', '{self.date_posted}')"
 
 class ImpactMetric(db.Model):
     id = db.Column(db.Integer, primary_key=True)

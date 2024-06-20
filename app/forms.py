@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from app.models import User
 
@@ -31,7 +31,16 @@ class ScheduleForm(FlaskForm):
     submit = SubmitField('Schedule')
 
 class RecyclingForm(FlaskForm):
-    materials = StringField('Materials', validators=[DataRequired()])
+    # materials = StringField('Materials', validators=[DataRequired()])
+    # submit = SubmitField('Log Recycling')
+    materials = SelectField('Materials', choices=[
+        ('plastic', 'Plastic'),
+        ('glass', 'Glass'),
+        ('paper', 'Paper'),
+        ('metal', 'Metal'),
+        ('organic', 'Organic'),
+        ('other', 'Other')
+    ], validators=[DataRequired()])
     submit = SubmitField('Log Recycling')
 
 class ImpactMetricForm(FlaskForm):
