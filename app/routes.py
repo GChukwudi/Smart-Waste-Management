@@ -52,9 +52,9 @@ def logout():
 @main.route("/dashboard")
 @login_required
 def dashboard():
-    impact_metrics = ImpactMetric.query.filter_by(author=current_user).all()
-    schedules = Schedule.query.filter_by(author=current_user).all()
-    recyclings = Recycling.query.filter_by(author=current_user).all()
+    impact_metrics = ImpactMetric.query.filter_by(user=current_user).all()
+    schedules = Schedule.query.filter_by(user=current_user).all()
+    recyclings = Recycling.query.filter_by(user=current_user).all()
 
     labels = [impact.date_tracked.strftime('%Y-%m-%d') for impact in impact_metrics]
     carbon_saved = [impact.carbon_saved for impact in impact_metrics]
@@ -67,6 +67,7 @@ def dashboard():
     }
 
     return render_template('dashboard.html', title='Dashboard', impact_data=impact_data, schedules=schedules, recyclings=recyclings)
+
 
 @main.route("/schedule", methods=['GET', 'POST'])
 @login_required
