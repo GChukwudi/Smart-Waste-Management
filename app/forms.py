@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField, SelectField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField, SelectField, DecimalField
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, InputRequired, NumberRange
 from app.models import User
 
 class RegistrationForm(FlaskForm):
@@ -49,5 +49,8 @@ class ImpactMetricForm(FlaskForm):
     submit = SubmitField('Track Impact')
 
 class TrackForm(FlaskForm):
-    date = StringField('Date', validators=[DataRequired()])
-    submit = SubmitField('Track')
+    carbon_saved = DecimalField('Carbon Saved (kg CO2)',
+                                validators=[InputRequired(message='Please enter carbon saved.'), NumberRange(min=0)])
+    energy_saved = DecimalField('Energy Saved (kWh)',
+                                validators=[InputRequired(message='Please enter energy saved.'), NumberRange(min=0)])
+    submit = SubmitField('Log Impact')

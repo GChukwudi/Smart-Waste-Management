@@ -1,19 +1,50 @@
 {% extends "base.html" %}
-{% block title %}Track Environmental Impact{% endblock %}
 {% block content %}
-<h1 class="mt-4">Track Environmental Impact</h1>
-<form method="POST" action="{{ url_for('main.track') }}">
-    {{ form.hidden_tag() }}
-    <div class="form-group">
-        {{ form.carbon_saved.label(class="form-label") }}
-        {{ form.carbon_saved(class="form-control") }}
+<div class="content-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <h2 class="mb-3">Track Impact</h2>
+                {% if impact_metrics %}
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title">Your Impact Metrics</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                {% for impact in impact_metrics %}
+                                    <li class="list-group-item">
+                                        <strong>Carbon Saved:</strong> {{ impact.carbon_saved }} kg CO2<br>
+                                        <strong>Energy Saved:</strong> {{ impact.energy_saved }} kWh<br>
+                                        <small class="text-muted">Tracked on {{ impact.date_tracked.strftime('%Y-%m-%d') }}</small>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Log New Impact Metric</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('main.track') }}">
+                            {{ csrf_token() }}
+                            <div class="form-group">
+                                <label for="carbon_saved">Carbon Saved (kg CO2)</label>
+                                <input type="number" step="0.01" id="carbon_saved" name="carbon_saved" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="energy_saved">Energy Saved (kWh)</label>
+                                <input type="number" step="0.01" id="energy_saved" name="energy_saved" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Log Impact</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        {{ form.energy_saved.label(class="form-label") }}
-        {{ form.energy_saved(class="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.submit(class="btn btn-primary") }}
-    </div>
-</form>
+</div>
 {% endblock %}
