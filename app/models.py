@@ -3,7 +3,7 @@ from app import db, login_manager
 from flask_login import UserMixin
 # from flask_wtf import FlaskForm
 # from wtforms import FloatField, SubmitField
-# from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired
 
 
 @login_manager.user_loader
@@ -21,8 +21,6 @@ class User(db.Model, UserMixin):
     recyclings = db.relationship('Recycling', backref='user', lazy=True)
     impact_metrics = db.relationship('ImpactMetric', backref='user', lazy=True)
     materials_recycled = db.relationship('MaterialRecycled', backref='user', lazy=True)
-    tracks = db.relationship('Track', backref='user', lazy=True)
-    schedules = db.relationship('Schedule', backref='user', lazy=True)
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
@@ -31,7 +29,6 @@ class Schedule(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    user = db.relationship('User', backref='schedules', lazy=True)
 
 class Recycling(db.Model):
     id = db.Column(db.Integer, primary_key=True)
