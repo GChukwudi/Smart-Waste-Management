@@ -4,7 +4,7 @@ from app.forms import RegistrationForm, LoginForm, ScheduleForm, RecyclingForm, 
 from app.models import User, Schedule, Recycling, ImpactMetric
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime
-# from collections import defaultdict
+from collections import defaultdict
 # import json
 
 
